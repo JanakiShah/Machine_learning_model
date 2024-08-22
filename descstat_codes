@@ -1,0 +1,91 @@
+
+/*%macro c; dm 'odsresults; clear'; dm 'log; clear'; %mend;*/
+option symbolgen mprint mlogic EXTENDOBSCOUNTER=NO nofmterr;
+%let rundate = %sysfunc(today(),yymmddn8.); *ex. 20200923;
+%let tdate = %sysfunc(today(),mmddyy10.); *ex. 09/23/2020;
+%let pgmname = %sysget(SAS_ExecFilePath) %sysfunc(getoption(sysin));
+footnote3 j=l height=7pt  "&pgmname";
+option mergenoby = error;
+ods escapechar="^";
+
+
+/**************************************/
+/*		Libnames / Filenames    	  */
+/**************************************/
+
+libname raw " \\Dept\ReproductiveJusticeProject\08Data\02Raw_Data";
+/**************************************/
+/*				FORMATS			   	  */
+/**************************************/
+
+
+/**************************************/
+/*				MACROS			   	  */
+/**************************************/
+
+
+/**************************************/
+/*		   DATA MANIPULATION		  */
+/**************************************/
+
+proc import out=tenpercent
+ datafile='\\Dept\ReproductiveJusticeProject\08Data\02Raw_Data\da_abrprsr_2021_rw_manualCoding_10pct.csv' 
+ DBMS=csv replace;
+run;
+
+
+proc print data=work.tenpercent;
+run;
+
+data work.tenpercent2;
+set work.tenpercent;
+if abortion = "No" AND CPC = "No" THEN neither = "Yes";
+if abortion = "Yes" OR CPC = "Yes" THEN neither = "No";
+run;
+
+
+/**************************************/
+/*		   PERMANENT DATASET		  */
+/**************************************/
+
+
+/**************************************/
+/*		 STATISTICAL PROCEDURES		  */
+/**************************************/
+ options nodate pageno=1 linesize=80 pagesize=60;
+ods rtf file='\\Dept\ReproductiveJusticeProject\09Programming\02Analyses_and_Reporting\03Analyses\descriptivestats_SICNAICS_nlc.rtf' STYLE=statistical;
+
+proc freq data = work.tenpercent2;
+table Abortion;
+run;
+
+proc freq data = work.tenpercent2;
+table CPC;
+run;
+
+proc freq data = work.tenpercent2;
+table neither;
+run;
+
+*proc freq data=work.tenpercent ;
+*tables PRIMARY_SIC_CODE*Abortion PRIMARY_NAICS_CODE*Abortion PRIMARY_SIC_CODE*CPC PRIMARY_NAICS_CODE*CPC / nopercent norow nocol;
+*run;
+
+*proc freq data=work.tenpercent ;
+*tables SIC6_DESCRIPTIONS*Abortion NAICS8_DESCRIPTIONS*Abortion SIC6_DESCRIPTIONS*CPC NAICS8_DESCRIPTIONS*CPC / nopercent norow nocol;
+*run;
+
+proc freq data=work.tenpercent2 order = Freq;
+tables SIC6_DESCRIPTIONS*Abortion NAICS8_DESCRIPTIONS*Abortion SIC6_DESCRIPTIONS*CPC NAICS8_DESCRIPTIONS*CPC SIC6_DESCRIPTIONS*neither NAICS8_DESCRIPTIONS*neither/ nopercent norow nocol;
+run;
+
+ods rtf close;
+/**************************************/
+/*		   OUTPUT MANIPULATION		  */
+/**************************************/
+
+
+/**************************************/
+/*	   FORMATTED OUTPUT	(TFLs)		  */
+/**************************************/
+
