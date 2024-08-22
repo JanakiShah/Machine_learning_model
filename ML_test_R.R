@@ -26,7 +26,7 @@ library(e1071)
 library(caret)
 library(dplyr)
 
-dat <- read.csv("//ad.bu.edu/bumcfiles/SPH/DCC/Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2021_rw_manualCoding_10pct.csv")
+dat <- read.csv("//Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2021_rw_manualCoding_10pct.csv")
 
 
 ## abortion services
@@ -76,7 +76,7 @@ dat$LOCATION.EMPLOYEE.SIZE.CODE_recode <- as.numeric(dat$LOCATION.EMPLOYEE.SIZE.
 dat$BUSINESS.STATUS.CODE <- as.numeric(dat$BUSINESS.STATUS.CODE)
 
 
-## Use dictionary to select variables: "//ad.bu.edu/bumcfiles/SPH/DCC/Dept/Data_Warehouse/05Data_Management/02Data_Definition/Historical Business Full File Layout 2020.xlsx" 
+## Use dictionary to select variables: "//Dept/Data_Warehouse/05Data_Management/02Data_Definition/Historical Business Full File Layout 2020.xlsx" 
 # These seem relevant and are complete
 #BUSINESS.STATUS.CODE
 #LOCATION.EMPLOYEE.SIZE.CODE 
@@ -109,7 +109,7 @@ confusionMatrix(table(dat_sub_test$CPC_recode, dat_sub_test$pred)) #
 
 ## pretty accurate but not great....test with the hand coded 2019 data as well...
 
-dat_19 <- read.csv("//ad.bu.edu/bumcfiles/SPH/DCC/Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2019_rw_manualCoding_10pct_manuallycoded.csv")
+dat_19 <- read.csv("//Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2019_rw_manualCoding_10pct_manuallycoded.csv")
 
 
 dat_19$NAICS8.DESCRIPTIONS <- dat_19$naics8_descriptions
@@ -158,7 +158,7 @@ confusionMatrix(table(dat_19_sub$CPC_recode, dat_19_sub$pred)) # 76% accuracy...
 
 ##### County analyses ####
 
-dat_full <- read.csv("//ad.bu.edu/bumcfiles/SPH/DCC/Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2021_rw.csv")
+dat_full <- read.csv("//Dept/ReproductiveJusticeProject/08Data/02Raw_Data/da_abrprsr_2021_rw.csv")
 
 
 dat_full$socialAdvocacy <- 0
@@ -200,7 +200,7 @@ dat_full_agg_merge <- merge(county, dat_full_agg, by = "StCoFIPS", all = TRUE)
 dat_full_agg_merge$cpc_count_std <- dat_full_agg_merge$cpc_count/dat_full_agg_merge$TotalPop2021x19 * 100000
 
 cor_matrix <- cor(dat_full_agg_merge[,-c(1,31)], use = "pairwise.complete.obs")
-write.csv(cor_matrix, "//ad.bu.edu/bumcfiles/SPH/DCC/Dept/ReproductiveJusticeProject/07Analyses_and_Reporting/03Analyses/prelim_CPC_correlations_20240319.csv", row.names = TRUE)
+write.csv(cor_matrix, "//Dept/ReproductiveJusticeProject/07Analyses_and_Reporting/03Analyses/prelim_CPC_correlations_20240319.csv", row.names = TRUE)
 
 
 
